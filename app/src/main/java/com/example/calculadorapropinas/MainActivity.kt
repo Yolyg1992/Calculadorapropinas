@@ -3,24 +3,31 @@ package com.example.calculadorapropinas
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    TipCalculatorApp()
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    MiCalculadoraPropinas()
                 }
             }
         }
@@ -28,75 +35,49 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun TipCalculatorApp() {
-    var amountInput by remember { mutableStateOf("") }
-    var tipPercentageInput by remember { mutableStateOf("") }
-    var totalResult by remember { mutableStateOf("") }
+fun MiCalculadoraPropinas() {
+    val amount = remember { mutableStateOf("") }
+    val percent = remember { mutableStateOf("") }
+    val result = remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Calculadora de Propinas",
-            style = MaterialTheme.typography.headlineMedium
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
+    Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
         OutlinedTextField(
-            value = amountInput,
-            onValueChange = { amountInput = it },
-            label = { Text("Monto de la Cuenta") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            value = amount.value,
+            onValueChange = { amount.value = it },
+            label = { Text("Monto") },
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = tipPercentageInput,
-            onValueChange = { tipPercentageInput = it },
-            label = { Text("Porcentaje (%)") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            value = percent.value,
+            onValueChange = { percent.value = it },
+            label = { Text("Propina %") },
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
-                val billAmount = amountInput.toDoubleOrNull()
-                val tipPercent = tipPercentageInput.toDoubleOrNull()
-
-                if (billAmount != null && tipPercent != null) {
-                    val tipAmount = (billAmount * tipPercent) / 100
-                    val total = billAmount + tipAmount
-                    totalResult = "Total a pagar: $${"%.2f".format(total)} \n (Propina: $${"%.2f".format(tipAmount)})"
+                val a = amount.value.toDoubleOrNull()
+                val p = percent.value.toDoubleOrNull()
+                if (a != null && p != null) {
+                    val tip = (a * p) / 100
+                    val total = a + tip
+                    result.value = "Total: $${String.format(Locale.US, "%.2f", total)}"
                 } else {
-                    totalResult = "Error: Ingresa números válidos"
+                    result.value = "Error"
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Calcular Propina")
+            Text("Calcular")
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = totalResult,
-            style = MaterialTheme.typography.headlineSmall
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    MaterialTheme {
-        TipCalculatorApp()
+        Text(text = result.value)
     }
 }
