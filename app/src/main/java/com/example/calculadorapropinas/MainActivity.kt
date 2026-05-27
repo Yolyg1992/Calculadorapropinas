@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -40,7 +41,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun CalculadoraPropinas() {
     val amount = remember { mutableStateOf("") }
-    val percent = remember { mutableStateOf("") }
     val result = remember { mutableStateOf("") }
     val tipAmount = remember { mutableStateOf("") }
 
@@ -67,39 +67,82 @@ fun CalculadoraPropinas() {
             singleLine = true
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = percent.value,
-            onValueChange = { percent.value = it },
-            label = { Text("Porcentaje de propina (%)") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
-
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(
-            onClick = {
-                val a = amount.value.toDoubleOrNull()
-                val p = percent.value.toDoubleOrNull()
-                if (a != null && p != null) {
-                    val tip = (a * p) / 100
-                    val total = a + tip
-                    tipAmount.value = String.format(Locale.US, "%.2f", tip)
-                    result.value = String.format(Locale.US, "%.2f", total)
-                } else {
-                    result.value = "Error"
-                    tipAmount.value = "Error"
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
+        Text(
+            text = "Selecciona porcentaje de propina:",
+            fontSize = 16.sp,
+            color = Color.Gray
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Fila de 3 botones horizontales
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp)
         ) {
-            Text("Calcular Propina", fontSize = 18.sp)
+            // Botón 10%
+            Button(
+                onClick = {
+                    val a = amount.value.toDoubleOrNull()
+                    if (a != null) {
+                        val tip = (a * 10) / 100
+                        val total = a + tip
+                        tipAmount.value = String.format(Locale.US, "%.2f", tip)
+                        result.value = String.format(Locale.US, "%.2f", total)
+                    } else {
+                        result.value = "Error"
+                        tipAmount.value = "Error"
+                    }
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("10%", fontSize = 18.sp)
+            }
+
+            // Botón 15%
+            Button(
+                onClick = {
+                    val a = amount.value.toDoubleOrNull()
+                    if (a != null) {
+                        val tip = (a * 15) / 100
+                        val total = a + tip
+                        tipAmount.value = String.format(Locale.US, "%.2f", tip)
+                        result.value = String.format(Locale.US, "%.2f", total)
+                    } else {
+                        result.value = "Error"
+                        tipAmount.value = "Error"
+                    }
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("15%", fontSize = 18.sp)
+            }
+
+            // Botón 20%
+            Button(
+                onClick = {
+                    val a = amount.value.toDoubleOrNull()
+                    if (a != null) {
+                        val tip = (a * 20) / 100
+                        val total = a + tip
+                        tipAmount.value = String.format(Locale.US, "%.2f", tip)
+                        result.value = String.format(Locale.US, "%.2f", total)
+                    } else {
+                        result.value = "Error"
+                        tipAmount.value = "Error"
+                    }
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("20%", fontSize = 18.sp)
+            }
         }
 
         Spacer(modifier = Modifier.height(32.dp))
 
+        // Mostrar resultados
         if (result.value.isNotEmpty() && result.value != "Error") {
             Text(
                 text = "Total a pagar:",
@@ -126,7 +169,7 @@ fun CalculadoraPropinas() {
             )
         } else if (result.value == "Error") {
             Text(
-                text = " Error: Ingresa números válidos",
+                text = " Error: Ingresa un monto válido",
                 color = Color.Red,
                 fontSize = 16.sp
             )
